@@ -1,0 +1,44 @@
+baseURL = 'https://gausyu.top/math-blog/'
+title = '兀渊学社'
+locale = 'en-US'
+timeZone = 'Asia/Shanghai'
+theme = 'bear'
+enableRobotsTXT = true
+enableGitInfo = false
+summaryLength = 30
+
+[params]
+  subtitle = 'Ecole π'
+  author = 'Xu Gao'
+  description = 'Mathematical notes by Xu Gao.'
+  favicon = 'favicon.svg'
+  dateFormat = '2006-01-02'
+
+[frontmatter]
+  date = ['date']
+  publishDate = ['date']
+  lastmod = ['lastmod', 'date']
+
+[permalinks]
+  posts = '/posts/:slug/'
+
+[taxonomies]
+  tag = 'tags'
+
+[outputs]
+  home = ['HTML', 'RSS', 'JSON']
+
+[markup]
+  [markup.goldmark.extensions.passthrough]
+    enable = true
+    [markup.goldmark.extensions.passthrough.delimiters]
+      block = [['$$', '$$'], ['\[', '\]']]
+      inline = [['$', '$'], ['\(', '\)']]
+  [markup.highlight]
+    style = 'friendly'
+    noClasses = true
+    lineNos = false
+
+[sitemap]
+  changeFreq = ''
+  priority = -1

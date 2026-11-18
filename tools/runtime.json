@@ -1,0 +1,9 @@
+{
+  "version": "0.170.0",
+  "url": "https://github.com/gohugoio/hugo/releases/download/v0.170.0/",
+  "assets": {
+    "hugo_0.170.0_darwin-universal.pkg": "b9dfc437df19dfd44720caf2e0ba7f9ca5c2e61164f2f4c53456f74d6fa28d22",
+    "hugo_0.170.0_linux-amd64.tar.gz": "0930754ec22ad2dd1a252f8c31a5e57faccc9d15f1c3d381ddafcb96eeb8aef0",
+    "hugo_0.170.0_linux-arm64.tar.gz": "4ec3acd12ac17dbffb34fa453d3630dc0926a2314c8cd4964a550cfa9a4dbc73"
+  }
+}

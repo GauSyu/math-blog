@@ -1,0 +1,5 @@
+{{ define "main" }}
+<h1>{{ if eq .Section "posts" }}Archive{{ else }}{{ .Title }}{{ end }}</h1>
+{{ with .Content }}<div class="prose">{{ . }}</div>{{ end }}
+{{ partial "entries.html" .RegularPages.ByDate.Reverse }}
+{{ end }}

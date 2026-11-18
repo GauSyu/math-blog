@@ -1,0 +1,15 @@
+<a class="skip-link" href="#main">Skip to content</a>
+<div class="site-header">
+  <div class="brand-line">
+    <a class="brand" href="{{ "" | relURL }}">{{ .Site.Title }}</a>
+    {{ with .Site.Params.subtitle }}<span class="site-subtitle">{{ . }}</span>{{ end }}
+  </div>
+  {{ $current := .RelPermalink }}
+  <nav class="site-nav" aria-label="Main navigation">
+    {{ range slice (dict "name" "Home" "path" "") (dict "name" "Archive" "path" "posts/") (dict "name" "Tags" "path" "tags/") (dict "name" "Search" "path" "search/") (dict "name" "About" "path" "about/") }}
+      {{ $url := .path | relURL }}
+      {{ $active := cond (eq .path "") (eq $current $url) (hasPrefix $current $url) }}
+      <a href="{{ $url }}"{{ if $active }} aria-current="page"{{ end }}>{{ .name }}</a>
+    {{ end }}
+  </nav>
+</div>

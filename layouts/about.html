@@ -1,0 +1,10 @@
+{{ define "main" }}
+{{ $introduction := .Site.GetPage "/posts/introduction" }}
+<article>
+<header class="article-header">
+  <h1>{{ .Title }}</h1>
+  {{ with $introduction }}{{ if .Draft }}<p class="article-dates"><span class="draft-label">Draft</span></p>{{ end }}{{ end }}
+</header>
+<div class="prose">{{ with $introduction }}{{ .Content }}{{ else }}{{ .Content }}{{ end }}</div>
+</article>
+{{ end }}

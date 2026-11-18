@@ -1,0 +1,10 @@
+{{ define "main" }}
+<h1>Tags</h1>
+<ul class="tag-list">
+{{ range .Data.Terms.Alphabetical }}
+  <li><a href="{{ .Page.RelPermalink }}">{{ .Page.Title }}</a> <span>{{ .Count }}</span></li>
+{{ else }}
+  <li class="empty-state">There are no tags yet.</li>
+{{ end }}
+</ul>
+{{ end }}

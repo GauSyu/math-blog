@@ -1,0 +1,8 @@
+{{- $options := dict "output" "htmlAndMathml" "displayMode" (eq .Type "block") "throwOnError" true "strict" "error" -}}
+{{- $result := try (transform.ToMath .Inner $options) -}}
+{{- with $result.Err -}}
+  {{- errorf "Invalid mathematical markup at %s: %s" $.Position . -}}
+{{- else -}}
+  {{- $result.Value -}}
+  {{- .Page.Store.Set "hasMath" true -}}
+{{- end -}}

@@ -1,0 +1,13 @@
+<ol class="entry-list">
+{{ range . }}
+  <li class="entry">
+    <div class="entry-date">{{ if .Draft }}<span class="draft-label">Draft</span>{{ else }}<time datetime="{{ .Date.Format "2006-01-02T15:04:05Z07:00" }}">{{ .Date.Format "2006-01-02" }}</time>{{ end }}</div>
+    <div class="entry-main"><h2 class="entry-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></h2>
+    {{ with .Description }}<p class="entry-summary">{{ . }}</p>{{ end }}
+    {{ with .GetTerms "tags" }}<ul class="entry-topics">{{ range . }}<li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>{{ end }}</ul>{{ end }}
+    </div>
+  </li>
+{{ else }}
+  <li class="empty-state">There are no articles here yet.</li>
+{{ end }}
+</ol>

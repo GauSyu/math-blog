@@ -1,0 +1,8 @@
+{{- $entries := slice -}}
+{{- range (where .Site.RegularPages "Section" "posts").ByDate.Reverse -}}
+  {{- $dateLabel := .Date.Format "2006-01-02" -}}
+  {{- if .Draft }}{{ $dateLabel = "Draft" }}{{ end -}}
+  {{- $text := .Content | replaceRE "(?s)<span class=\"katex-mathml\">.*?</math></span>" "" | plainify | htmlUnescape -}}
+  {{- $entries = $entries | append (dict "title" .Title "path" .RelPermalink "dateLabel" $dateLabel "draft" .Draft "content" $text "summary" .Description "tags" (.Params.tags | default slice)) -}}
+{{- end -}}
+{{- $entries | jsonify -}}

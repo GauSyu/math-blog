@@ -1,0 +1,5 @@
+{{ define "main" }}
+<h1 class="visually-hidden">Articles</h1>
+<p class="home-description">{{ .Site.Params.description }}</p>
+{{ partial "entries.html" (where .Site.RegularPages "Section" "posts").ByDate.Reverse }}
+{{ end }}

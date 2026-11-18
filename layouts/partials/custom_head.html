@@ -1,0 +1,6 @@
+<meta name="color-scheme" content="light">
+<link rel="icon" type="image/svg+xml" href="{{ "favicon.svg" | relURL }}">
+<link rel="stylesheet" href="{{ "assets/katex/katex.min.css" | relURL }}">
+{{ with resources.Get "css/journal.css" | minify | fingerprint }}
+<link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">
+{{ end }}

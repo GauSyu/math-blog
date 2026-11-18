@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ if not .IsHome }}{{ .Title }} · {{ end }}{{ .Site.Title }}</title>
+  <meta name="description" content="{{ .Description | default .Site.Params.description }}">
+  <link rel="canonical" href="{{ .Permalink }}">
+  <link rel="alternate" type="application/rss+xml" title="{{ .Site.Title }}" href="{{ "index.xml" | relURL }}">
+  {{ partial "custom_head.html" . }}
+</head>
+<body>
+  <header>{{ partial "header.html" . }}</header>
+  <main id="main" tabindex="-1">{{ block "main" . }}{{ end }}</main>
+  <footer>{{ partial "footer.html" . }}</footer>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{{ define "main" }}
+<h1>Search</h1>
+<form class="search-form" role="search" action="{{ .RelPermalink }}" method="get" data-search-form data-index="{{ "index.json" | relURL }}" data-root="{{ "" | relURL }}">
+  <label for="search-query">Search articles</label>
+  <div class="search-controls"><input id="search-query" name="q" type="search" autocomplete="off" maxlength="160" placeholder="A title, topic, or mathematical term"><button type="submit">Search</button></div>
+</form>
+<p class="search-status" role="status" aria-live="polite" data-search-status>Search article titles, topics, and text.</p>
+<ol class="search-results" data-search-results aria-label="Search results"></ol>
+<noscript><p>Search requires JavaScript. You can also browse the <a href="{{ "posts/" | relURL }}">archive</a>.</p></noscript>
+<script src="{{ "search.js" | relURL }}" defer></script>
+{{ end }}
