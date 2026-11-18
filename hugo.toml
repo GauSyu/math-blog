@@ -9,8 +9,8 @@ summaryLength = 30
 
 [params]
   subtitle = 'Ecole π'
-  author = 'Xu Gao'
-  description = 'Mathematical notes by Xu Gao.'
+  author = 'Gau-Syu'
+  description = 'Mathematical notes by Gau-Syu.'
   favicon = 'favicon.svg'
   dateFormat = '2006-01-02'
 

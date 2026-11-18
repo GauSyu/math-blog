@@ -3,4 +3,6 @@ title = "About me"
 layout = "about"
 +++
 
-[Xu Gao’s personal homepage](https://gausyu.top/).
+[Gau-Syu’s personal homepage](https://gausyu.top/).
+
+The [old blog](https://gausyu.top/MathBlog/) is still available.
