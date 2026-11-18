@@ -19,8 +19,9 @@ jobs:
           python-version: '3.13'
       - name: Install TikZ rendering tools
         run: |
-          sudo apt-get update
-          sudo apt-get install --no-install-recommends -y texlive-latex-base texlive-latex-extra texlive-pictures dvisvgm
+          printf '%s\n' 'https://archive.ubuntu.com/ubuntu/' | sudo tee /etc/apt/apt-mirrors.txt >/dev/null
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
+          sudo apt-get -o Acquire::Retries=3 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 install --no-install-recommends -y texlive-latex-base texlive-latex-extra texlive-pictures dvisvgm
       - run: ./blog setup
       - run: ./blog check
       - run: ./blog build
