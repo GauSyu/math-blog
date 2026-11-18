@@ -1,8 +1,55 @@
-{{- $options := dict "output" "htmlAndMathml" "displayMode" (eq .Type "block") "throwOnError" true "strict" "error" -}}
-{{- $result := try (transform.ToMath .Inner $options) -}}
-{{- with $result.Err -}}
-  {{- errorf "Invalid mathematical markup at %s: %s" $.Position . -}}
+{{- $source := .Inner -}}
+{{- $metadata := partial "math/source.html" .Inner -}}
+{{- $indexing := findRE `\\hugoEquationIndexLabel\b` $metadata -}}
+{{- $labelCommand := `\\label\b` -}}
+{{- $labelPattern := `\\label\s*\{([^{}]*)\}` -}}
+{{- if $indexing }}{{ $labelCommand = `\\hugoEquationIndexLabel\b` }}{{ $labelPattern = `\\hugoEquationIndexLabel\s*\{([^{}]*)\}` }}{{ end -}}
+{{- $labels := findRESubmatch $labelPattern $metadata -}}
+{{- if gt (len $labels) 1 -}}
+  {{- errorf "Use one equation label per display at %s; use aligned for one numbered group." .Position -}}
+{{- end -}}
+{{- $label := "" -}}
+{{- with $labels -}}
+  {{- $label = index (index . 0) 1 -}}
+  {{- if ne $.Type "block" }}{{ errorf "Equation labels require display math at %s." $.Position }}{{ end -}}
+  {{- if not (findRE `^[A-Za-z][A-Za-z0-9:._-]*$` $label) -}}
+    {{- errorf "Invalid equation label %q at %s; use letters, digits, colon, dot, underscore or hyphen, starting with a letter." $label $.Position -}}
+  {{- end -}}
+  {{- $source = replace $source (index (index . 0) 0) "" -}}
+  {{- $metadata = replace $metadata (index (index . 0) 0) "" -}}
+{{- end -}}
+{{- if findRE $labelCommand $metadata -}}
+  {{- errorf "Malformed equation label at %s." .Position -}}
+{{- end -}}
+{{- if $indexing -}}
+  {{- printf "<!--hugo-equation-label:%s-->" ($label | base64Encode) | safeHTML -}}
 {{- else -}}
-  {{- $result.Value -}}
-  {{- .Page.Store.Set "hasMath" true -}}
+  {{- $number := 0 -}}
+  {{- with $label -}}
+    {{- if findRE `\\tag\*?\s*\{` $metadata -}}
+      {{- errorf "A labelled display receives an automatic number; do not combine label and tag at %s." $.Position -}}
+    {{- end -}}
+    {{- $number = partial "math/lookup.html" (dict "page" $.Page "label" . "position" $.Position) -}}
+    {{- $source = printf "%s\n\\tag{%d}" $source $number -}}
+  {{- end -}}
+  {{- range findRESubmatch `\\(eqref|ref)\s*\{([^{}]*)\}` $metadata -}}
+    {{- $reference := partial "math/lookup.html" (dict "page" $.Page "label" (index . 2) "position" $.Position) -}}
+    {{- $replacement := printf "%d" $reference -}}
+    {{- if eq (index . 1) "eqref" }}{{ $replacement = printf "(%d)" $reference }}{{ end -}}
+    {{- $source = replace $source (index . 0) $replacement -}}
+    {{- $metadata = replace $metadata (index . 0) $replacement -}}
+  {{- end -}}
+  {{- if findRE `\\(eqref|ref)\b` $metadata -}}
+    {{- errorf "Malformed equation reference at %s." .Position -}}
+  {{- end -}}
+  {{- $options := dict "output" "htmlAndMathml" "displayMode" (eq .Type "block") "throwOnError" true "strict" "error" "macros" (partial "math/macros.html" .Page) -}}
+  {{- $result := try (transform.ToMath $source $options) -}}
+  {{- with $result.Err -}}
+    {{- errorf "Invalid mathematical markup at %s: %s" $.Position . -}}
+  {{- else -}}
+    {{- if $label }}<div class="equation" id="eq-{{ $label }}">{{ end -}}
+    {{- $result.Value -}}
+    {{- if $label }}</div>{{ end -}}
+    {{- .Page.Store.Set "hasMath" true -}}
+  {{- end -}}
 {{- end -}}

@@ -75,6 +75,8 @@ h3 { font-size: 1.3rem; line-height: 1.4; }
 .prose .katex { font-size: 1.04em; }
 .prose .katex-display { max-width: 100%; overflow-x: auto; overflow-y: hidden; padding-block: .3rem; }
 .prose .katex-display > .katex { white-space: nowrap; }
+.prose .equation { scroll-margin-top: 2rem; }
+.prose .equation:target { outline: 1px solid var(--line); outline-offset: .4rem; }
 .prose .footnotes { margin-top: 2.5rem; color: #59635b; font-size: .88em; }
 .article-header { margin-bottom: 2.2rem; }
 .article-header h1 { margin-bottom: .9rem; }

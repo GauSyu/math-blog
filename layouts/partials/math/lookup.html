@@ -1,0 +1,5 @@
+{{- $labels := partialCached "math/index.html" .page .page.RelPermalink .page.RawContent -}}
+{{- if not (isset $labels .label) -}}
+  {{- errorf "Unknown equation label %q in %s, referenced at %s." .label .page.File.Path .position -}}
+{{- end -}}
+{{- return (index $labels .label | default 0) -}}

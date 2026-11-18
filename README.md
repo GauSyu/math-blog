@@ -34,7 +34,62 @@ Continue the argument here.[^reference]
 [^reference]: Give the source and the relevant section or result.
 ```
 
+TeX macros 只定义确实能减轻编辑负担的 semantic macros，名称应表达数学含义。按实际写作需要逐个引入，是否放入共用配置也以实际复用需要为准；不预置成套缩写。
+
 脚注使用 `[^name]`，代码使用带语言名的 fenced code block。图片和其他附件放在文章同一目录，可用 `![说明](figure.png)` 引用；每个文章目录只放一份正文 `index.md`。
+
+## 公式与图
+
+### Semantic macros
+
+默认不定义任何宏。文章需要的宏放在该文 TOML front matter 的普通字段之后，例如：
+
+```toml
+[[math.macros]]
+name = '\derivedHom'
+definition = '\operatorname{RHom}(#1,#2)'
+```
+
+随后可在该文的公式中写 `\derivedHom{X}{Y}`。确实需要在多篇文章复用时，将 `data/math.toml` 中的 `macros = []` 替换为同样的 `[[macros]]` 条目；文章内的同名定义优先，其他文章不受影响。名称通过 `name` 的值保存，大小写有区别。这里的定义用于正文 KaTeX，TikZ 的 TeX 源码自行加载需要的定义。
+
+### 编号与交叉引用
+
+给需要编号的 display formula 添加 `\label`；有 label 的公式按文章内出现顺序从 1 编号，没有 label 的公式不编号：
+
+```markdown
+See {{< eqref "eq:hom" >}} below.
+
+$$
+\operatorname{Hom}(X,Y)=0.\label{eq:hom}
+$$
+```
+
+正文的 `eqref` 生成可点击的 `(1)`；可提前引用。跨文章引用写 `{{< eqref "eq:hom" "/posts/other-article" >}}`，第二个参数为目标文章路径。公式内部支持同文的 `\eqref{eq:hom}` 和 `\ref{eq:hom}`，分别显示 `(1)` 与 `1`。
+
+每个 display block 使用一个 label，`aligned` 可作为一个整体编号。重复 label、找不到的目标或无效公式会阻止构建，避免把错误引用发布出去。
+
+### TikZ / tikz-cd
+
+在文章目录中新建 `diagrams/name.tex`，写一份单页的 standalone document，例如：
+
+```tex
+\documentclass[tikz,border=2pt]{standalone}
+\begin{document}
+\begin{tikzpicture}
+  \draw[->] (0,0) -- (2,0) node[right] {$x$};
+\end{tikzpicture}
+\end{document}
+```
+
+在文章中引用生成的同名 SVG：
+
+```markdown
+![An arrow along the x-axis](diagrams/name.svg)
+```
+
+`./blog build` 和 `./blog preview` 自动编译这些图，预览时也会更新。支持 `\usepackage{tikz-cd}`；TeX 的相对输入文件放在同一文章目录。只有 `diagrams/` 直接目录中的 `.tex` 是编译入口，共用片段可放在 `diagrams/parts/`。生成物与缓存放在 `.cache/`，不修改 `.tex` 或文章正文，也不需要提交 SVG；源目录不能同时存在同名 SVG，以免遮盖生成图。生产构建不处理草稿和未来文章的图。
+
+本机有图时需要 TeX Live / MacTeX 的 `latex`、`standalone`、TikZ / `tikz-cd` 和 `dvisvgm`；无图时不要求安装 TeX。编译禁用 shell escape，图源或依赖变化会使缓存失效；编译失败会报错并移除旧的生成图。GitHub Actions 已配置相应 TeX 依赖，读者浏览时只加载 SVG。
 
 ## 在本地发布
 

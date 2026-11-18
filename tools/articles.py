@@ -112,6 +112,8 @@ def validate_articles(root) -> list[dict]:
     records = []
     seen = set()
     for bundle in sorted(posts.iterdir()):
+        if bundle.name == '.DS_Store' and bundle.is_file() and not bundle.is_symlink():
+            continue
         if bundle.name == "_index.md":
             _parse(_read_article(bundle), bundle)
             continue

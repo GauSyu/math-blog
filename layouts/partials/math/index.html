@@ -1,0 +1,19 @@
+{{- /* A separate Goldmark render indexes only actual math nodes, leaving code
+     fences and inline code literal. It does not mutate page state, so forward
+     and cross-page references are independent of parallel page render order. */ -}}
+{{- $source := replaceRE `\\label\b` `\hugoEquationIndexLabel` .RawContent -}}
+{{- $source = replaceRE `(?s)\{\{[<%]\s*eqref\b.*?[>%]\}\}` "" $source -}}
+{{- $source = replaceRE `\\(?:eqref|ref)\s*\{[^{}]*\}` "0" $source -}}
+{{- $rendered := .RenderString (dict "display" "block") $source -}}
+{{- $index := newScratch -}}
+{{- $index.Set "labels" dict -}}
+{{- $number := 0 -}}
+{{- range findRESubmatch `<!--hugo-equation-label:([A-Za-z0-9+/=]+)-->` $rendered -}}
+  {{- $label := index . 1 | base64Decode -}}
+  {{- if isset ($index.Get "labels") $label -}}
+    {{- errorf "Duplicate equation label %q in %s." $label $.File.Path -}}
+  {{- end -}}
+  {{- $number = add $number 1 -}}
+  {{- $index.SetInMap "labels" $label $number -}}
+{{- end -}}
+{{- return ($index.Get "labels") -}}

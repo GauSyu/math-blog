@@ -166,6 +166,13 @@ Body remains.
         with self.assertRaises(ValueError):
             validate_articles(self.root)
 
+    def test_finder_metadata_does_not_block_the_writing_workflow(self):
+        index = self.new()
+        metadata = index.parent.parent / '.DS_Store'
+        metadata.write_bytes(b'Finder metadata')
+        self.assertEqual([record['path'] for record in validate_articles(self.root)], [index])
+        self.assertEqual(metadata.read_bytes(), b'Finder metadata')
+
     def test_hugo_section_index_is_not_counted_as_an_article(self):
         posts = self.root / "content/posts"
         posts.mkdir(parents=True)

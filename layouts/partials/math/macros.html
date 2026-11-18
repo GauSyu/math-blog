@@ -1,0 +1,33 @@
+{{- $global := slice -}}
+{{- $local := slice -}}
+{{- with hugo.Data.math }}{{ $global = .macros | default slice }}{{ end -}}
+{{- with .Params.math }}{{ $local = .macros | default slice }}{{ end -}}
+{{- $result := newScratch -}}
+{{- $result.Set "macros" dict -}}
+{{- range $scope, $definitions := slice $global $local -}}
+  {{- if not (reflect.IsSlice $definitions) -}}
+    {{- errorf "math.macros must be an array of name/definition entries in %s." $.File.Path -}}
+  {{- else -}}
+    {{- $seen := newScratch -}}
+    {{- $seen.Set "names" dict -}}
+    {{- range $definitions -}}
+      {{- if not (reflect.IsMap .) -}}
+        {{- errorf "Each math.macros entry must contain name and definition in %s." $.File.Path -}}
+      {{- else -}}
+        {{- $name := .name | default "" -}}
+        {{- $definition := .definition -}}
+        {{- if or (ne (printf "%T" $name) "string") (not (findRE `^\\[A-Za-z]+$` $name)) (in (slice `\label` `\ref` `\eqref` `\hugoEquationIndexLabel`) $name) -}}
+          {{- errorf "Invalid or reserved semantic macro name %q in %s." $name $.File.Path -}}
+        {{- else if ne (printf "%T" $definition) "string" -}}
+          {{- errorf "The definition of semantic macro %q must be a string in %s." $name $.File.Path -}}
+        {{- else if isset ($seen.Get "names") $name -}}
+          {{- errorf "Duplicate semantic macro %q in the same scope in %s." $name $.File.Path -}}
+        {{- else -}}
+          {{- $seen.SetInMap "names" $name true -}}
+          {{- $result.SetInMap "macros" $name $definition -}}
+        {{- end -}}
+      {{- end -}}
+    {{- end -}}
+  {{- end -}}
+{{- end -}}
+{{- return ($result.Get "macros") -}}

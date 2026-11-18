@@ -28,6 +28,14 @@ summaryLength = 30
 [outputs]
   home = ['HTML', 'RSS', 'JSON']
 
+[module]
+  [[module.mounts]]
+    source = 'content'
+    target = 'content'
+  [[module.mounts]]
+    source = '.cache/tikz-content'
+    target = 'content'
+
 [markup]
   [markup.goldmark.extensions.passthrough]
     enable = true

@@ -1,0 +1,3 @@
+# Add semantic macros only when they reduce actual editing work.
+# Use [[macros]] with name and definition; per-article math.macros may override.
+macros = []

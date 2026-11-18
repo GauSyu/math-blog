@@ -21,7 +21,7 @@ class SiteTest(unittest.TestCase):
         self.temp = tempfile.TemporaryDirectory(prefix="math-blog-site-test-")
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name)
-        for name in ["themes", "layouts", "assets", "static", "archetypes"]:
+        for name in ["themes", "layouts", "assets", "static", "archetypes", "data"]:
             shutil.copytree(ROOT / name, self.root / name)
         shutil.copyfile(ROOT / "hugo.toml", self.root / "hugo.toml")
         (self.root / "content/posts").mkdir(parents=True)

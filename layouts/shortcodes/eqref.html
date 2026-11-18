@@ -1,0 +1,18 @@
+{{- if or (lt (len .Params) 1) (gt (len .Params) 2) .IsNamedParams -}}
+  {{- errorf "eqref expects a label and optionally a page path at %s." .Position -}}
+{{- end -}}
+{{- $label := .Get 0 -}}
+{{- $target := .Page -}}
+{{- $href := printf "#eq-%s" $label -}}
+{{- if eq (len .Params) 2 -}}
+  {{- $target = .Page.Site.GetPage (.Get 1) -}}
+  {{- if not $target -}}
+    {{- errorf "Unknown equation reference page %q at %s." (.Get 1) .Position -}}
+  {{- else -}}
+    {{- $href = printf "%s#eq-%s" $target.RelPermalink $label -}}
+  {{- end -}}
+{{- end -}}
+{{- with $target -}}
+  {{- $number := partial "math/lookup.html" (dict "page" . "label" $label "position" $.Position) -}}
+  <a class="eqref" href="{{ $href | safeURL }}">({{ $number }})</a>
+{{- end -}}

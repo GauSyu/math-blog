@@ -1,0 +1,3 @@
+{{- /* Metadata scan only: preserve escaped pairs such as \% and \\, then
+     hide TeX comments. Send the untouched TeX to KaTeX for tokenization. */ -}}
+{{- return (replaceRE `(\\.)|%[^\r\n]*` "$1" .) -}}
